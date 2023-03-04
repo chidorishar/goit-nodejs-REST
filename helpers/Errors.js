@@ -33,9 +33,16 @@ class AuthCredentialsError extends HttpError {
   }
 }
 
+class AuthVerificationError extends HttpError {
+  constructor(message = 'Unverified user with provided token not found') {
+    return super(404, message);
+  }
+}
+
 module.exports = {
   AuthCredentialsError,
   HttpError,
   MongoDBActionError,
   UserConflictError,
+  AuthVerificationError,
 };
