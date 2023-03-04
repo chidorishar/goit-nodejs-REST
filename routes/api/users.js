@@ -31,6 +31,10 @@ router.get(
   validateJwtToken,
   asyncMiddlewareWrapper(authActions.getCurrentUserInfo)
 );
+router.get(
+  '/verify/:verificationToken',
+  asyncMiddlewareWrapper(authActions.verify)
+);
 router.patch(
   '/',
   validateJwtToken,

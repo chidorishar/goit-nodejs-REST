@@ -3,6 +3,7 @@ const {
   AuthCredentialsError,
   MongoDBActionError,
   UserConflictError,
+  AuthVerificationError,
 } = require('../helpers');
 const { UserModel } = require('../models');
 const fs = require('fs/promises');
@@ -119,6 +120,28 @@ async function updateAvatar(req, res, next) {
   res.status(200).json({ avatarURL: '/avatars/' + avatarFilename });
 }
 
+async function verify(req, res, next) {
+  const { verificationToken } = req.params;
+  console.log(verificationToken);
+
+  // is user exist in DB
+  const userWithVerToken = await UserModel.findOne({
+    verificationToken,
+    verified: false,
+  });
+  if (!userWithVerToken) throw new AuthVerificationError();
+
+  // erase verification token and set verified flag
+  userWithVerToken.verificationToken = '-';
+  userWithVerToken.verified = true;
+  const updatedUser = await userWithVerToken.save();
+  if (!updatedUser)
+    throw new MongoDBActionError('Failed to update user`s info');
+
+  // report
+  res.status(200).json({ message: 'Verification succeed' });
+}
+
 module.exports = {
   signup,
   login,
@@ -126,4 +149,5 @@ module.exports = {
   getCurrentUserInfo,
   changeSubscription,
   updateAvatar,
+  verify,
 };
