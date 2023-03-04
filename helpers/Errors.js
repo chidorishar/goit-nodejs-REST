@@ -22,14 +22,14 @@ class UserConflictError extends HttpError {
 }
 
 class MongoDBActionError extends HttpError {
-  constructor(message = 'Unknown error on action wit DB') {
+  constructor(message = 'Unknown error on action with DB') {
     return super(500, message);
   }
 }
 
 class AuthCredentialsError extends HttpError {
-  constructor(message = 'Unknown error on action wit DB') {
-    return super(401, 'Email or password is wrong');
+  constructor(message = "User didn't pass verification requirements") {
+    return super(401, "Email or password is wrong, or email doesn't verified.");
   }
 }
 

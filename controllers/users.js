@@ -22,6 +22,7 @@ async function signup(req, res, next) {
   // create and save new user
   const newUser = new UserModel({ email });
   newUser.addPassword(password);
+  newUser.addVerificationToken();
   newUser.setAvatar();
   const savedUser = await newUser.save();
   if (!savedUser) throw new MongoDBActionError('Failed to save new user');
@@ -35,7 +36,7 @@ async function login(req, res, next) {
   const { email, password } = req.body;
 
   // is user exist in DB and are the passwords equal
-  const userWithEmail = await UserModel.findOne({ email });
+  const userWithEmail = await UserModel.findOne({ email, verified: true });
   if (!userWithEmail || !userWithEmail.comparePasswords(password))
     throw new AuthCredentialsError(401);
 
