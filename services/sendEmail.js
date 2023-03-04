@@ -3,7 +3,7 @@ const { EMAIL_SENDER_ADDRESS } = process.env;
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-async function sendMail({ recieverEmail, topic, messageText, messageMarkup }) {
+async function sendEmail({ recieverEmail, topic, messageText, messageMarkup }) {
   const msg = {
     to: recieverEmail, // Change to your recipient
     from: EMAIL_SENDER_ADDRESS, // Change to your verified sender
@@ -19,4 +19,4 @@ async function sendMail({ recieverEmail, topic, messageText, messageMarkup }) {
   }
 }
 
-module.exports = sendMail;
+module.exports = sendEmail;

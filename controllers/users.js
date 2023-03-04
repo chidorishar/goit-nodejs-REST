@@ -8,8 +8,9 @@ const { UserModel } = require('../models');
 const fs = require('fs/promises');
 const path = require('path');
 const Jimp = require('jimp');
+const { sendEmail } = require('../services');
 
-const { SECRET_KEY } = process.env;
+const { SECRET_KEY, BASE_URL, PORT } = process.env;
 const pathToAvatars = path.resolve(__dirname, '..', 'public', 'avatars');
 
 async function signup(req, res, next) {
@@ -26,6 +27,18 @@ async function signup(req, res, next) {
   newUser.setAvatar();
   const savedUser = await newUser.save();
   if (!savedUser) throw new MongoDBActionError('Failed to save new user');
+
+  // send verification code to user's email
+  const verificationLink = `${BASE_URL + ':' + PORT}/api/users/${
+    savedUser.verificationToken
+  }`;
+  const message = {
+    recieverEmail: email,
+    topic: 'Verification code',
+    messageText: `Please complete your verification by following this link: ${verificationLink}`,
+    messageMarkup: `Please complete your verification by following this link: <a href=${verificationLink}>${verificationLink}</a>`,
+  };
+  await sendEmail(message);
 
   // report
   const { subscription, token } = savedUser;
