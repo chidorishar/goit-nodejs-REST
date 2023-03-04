@@ -29,7 +29,7 @@ async function signup(req, res, next) {
   if (!savedUser) throw new MongoDBActionError('Failed to save new user');
 
   // send verification code to user's email
-  const verificationLink = `${BASE_URL + ':' + PORT}/api/users/${
+  const verificationLink = `${BASE_URL + ':' + PORT}/api/users/verify/${
     savedUser.verificationToken
   }`;
   const message = {
