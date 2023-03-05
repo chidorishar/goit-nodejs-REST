@@ -27,6 +27,11 @@ router.post(
   validateBody(userJoiSchema, 'Ошибка от Joi или другой библиотеки валидации'),
   asyncMiddlewareWrapper(authActions.login)
 );
+router.post(
+  '/verify',
+  validateBody(verifyJoiSchema, 'missing required field email'),
+  asyncMiddlewareWrapper(authActions.resendVerificationToken)
+);
 router.get(
   '/logout',
   validateJwtToken,

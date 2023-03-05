@@ -4,6 +4,7 @@ const {
   MongoDBActionError,
   UserConflictError,
   AuthVerificationError,
+  HttpError,
 } = require('../helpers');
 const { UserModel } = require('../models');
 const fs = require('fs/promises');
@@ -144,6 +145,21 @@ async function verify(req, res, next) {
   res.status(200).json({ message: 'Verification succeed' });
 }
 
+async function resendVerificationToken(req, res, next) {
+  const { email } = req.body;
+
+  // is user exist in DB
+  const userWithEmail = await UserModel.findOne({ email });
+  if (userWithEmail.verified)
+    throw new HttpError(400, 'Verification has already been passed');
+
+  // send email with verification link
+  await sendVerificationLink(email, userWithEmail.verificationToken);
+
+  // report
+  res.status(200).json({ message: 'Verification email sent' });
+}
+
 module.exports = {
   signup,
   login,
@@ -152,4 +168,5 @@ module.exports = {
   changeSubscription,
   updateAvatar,
   verify,
+  resendVerificationToken,
 };
