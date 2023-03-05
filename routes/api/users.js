@@ -5,7 +5,13 @@ const {
   validateJwtToken,
   uploadFile,
 } = require('@root/middlewares');
-const { userJoiSchema, subscriptionJoiSchema } = require('@root/models');
+const {
+  usersValidationSchemas: {
+    userJoiSchema,
+    subscriptionJoiSchema,
+    verifyJoiSchema,
+  },
+} = require('@root/models');
 // const validateID = require('@root/middlewares/validateID');
 const { authActions, updateUserAvatar } = require('@root/controllers');
 

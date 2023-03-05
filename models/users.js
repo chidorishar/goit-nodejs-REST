@@ -60,16 +60,23 @@ userScheme.post('save', mongooseErrorHandler);
 
 const UserModel = mongoose.model('users', userScheme);
 
-const userJoiSchema = joi.object({
-  password: joi.string().min(6).required(),
-  email: joi.string().required(),
-});
-const subscriptionJoiSchema = joi.object({
-  subscription: joi.string().valid('starter', 'pro', 'business').required(),
-});
+// SCHEMAS
+const usersValidationSchemas = {
+  userJoiSchema: joi.object({
+    password: joi.string().min(6).required(),
+    email: joi.string().required(),
+  }),
+
+  subscriptionJoiSchema: joi.object({
+    subscription: joi.string().valid('starter', 'pro', 'business').required(),
+  }),
+
+  verifyJoiSchema: joi.object({
+    email: joi.string().required(),
+  }),
+};
 
 module.exports = {
   UserModel,
-  userJoiSchema,
-  subscriptionJoiSchema,
+  usersValidationSchemas,
 };
