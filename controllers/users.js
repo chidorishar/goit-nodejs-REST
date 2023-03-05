@@ -14,6 +14,18 @@ const { sendEmail } = require('../services');
 const { SECRET_KEY, BASE_URL, PORT } = process.env;
 const pathToAvatars = path.resolve(__dirname, '..', 'public', 'avatars');
 
+async function sendVerificationLink(email, token) {
+  const verificationLink = `${BASE_URL + ':' + PORT}/api/users/verify/${token}`;
+  const message = {
+    recieverEmail: email,
+    topic: 'Verification code',
+    messageText: `Please complete your verification by following this link: ${verificationLink}`,
+    messageMarkup: `Please complete your verification by following this link: <a href=${verificationLink}>${verificationLink}</a>`,
+  };
+
+  await sendEmail(message);
+}
+
 async function signup(req, res, next) {
   const { email, password } = req.body;
 
@@ -30,16 +42,7 @@ async function signup(req, res, next) {
   if (!savedUser) throw new MongoDBActionError('Failed to save new user');
 
   // send verification code to user's email
-  const verificationLink = `${BASE_URL + ':' + PORT}/api/users/verify/${
-    savedUser.verificationToken
-  }`;
-  const message = {
-    recieverEmail: email,
-    topic: 'Verification code',
-    messageText: `Please complete your verification by following this link: ${verificationLink}`,
-    messageMarkup: `Please complete your verification by following this link: <a href=${verificationLink}>${verificationLink}</a>`,
-  };
-  await sendEmail(message);
+  await sendVerificationLink(email, savedUser.verificationToken);
 
   // report
   const { subscription, token } = savedUser;
