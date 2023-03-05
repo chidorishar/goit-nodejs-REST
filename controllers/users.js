@@ -122,7 +122,6 @@ async function updateAvatar(req, res, next) {
 
 async function verify(req, res, next) {
   const { verificationToken } = req.params;
-  console.log(verificationToken);
 
   // is user exist in DB
   const userWithVerToken = await UserModel.findOne({
